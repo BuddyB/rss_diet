@@ -20,15 +20,18 @@
 <hr>
 
 <?
-  $src = "rss_diet.php?url=" . $_GET['url'] . "&";
+  $src = "http://$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]";
+  $src = str_replace(basename(__FILE__), "rss_diet.php", $src);
+  $src .= "?url=" . $_GET['url'] . "&";
   foreach ($_GET as $key => $value) {
     if (strpos($key, "filter_") === 0 && $value != null && $value != '') {
       $src .= $key . '=' . $value . "&";
     }
   }
-  $src = substr($src, 0, -1);
-  echo "Showing: $src...<br>";
-  echo "<iframe src=$src width='100%' />";
+  $src = substr($src, 0, -1); // strip off the trailing '&'
+
+  echo "Showing: <a href=\"$src\">$src</a>...<br>";
+  echo "<iframe src=$src width='100%' height='50%' />";
 ?>
 
 </html>

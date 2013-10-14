@@ -28,10 +28,10 @@
 
   $rssXml = new DOMDocument();
   $rssXml->loadXML($rssSrc);
-  $rssXPath = new DOMXPath($rssXml);
 
   $nodesToRemove = array();
-  foreach($rssXPath->query("//item") as $item) {
+  $items = $rssXml->getElementsByTagName("item");
+  foreach($items as $item) {
     if (shouldFilterOut($item)) {
       $nodesToRemove[] = $item;
     }
