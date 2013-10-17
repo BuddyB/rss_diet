@@ -370,8 +370,13 @@ $(function() {
         self.$(".signup-form .error").html("Please enter a password.").show();
         return false;
       }
+
+      var user = new Parse.User();
+      user.set("username", username);
+      user.set("email", username);
+      user.set("password", password);
       
-      Parse.User.signUp(username, password, { ACL: new Parse.ACL() }, {
+      user.signUp({ ACL: new Parse.ACL() }, {
         success: function(user) {
           new ManageTodosView();
           self.undelegateEvents();
