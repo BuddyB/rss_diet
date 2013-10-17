@@ -295,6 +295,7 @@ $(function() {
   var LogInView = Parse.View.extend({
     events: {
       "submit form.login-form": "logIn",
+      "click form.login-form #forgot-password": "forgotPassword",
       "submit form.signup-form": "signUp"
     },
 
@@ -305,11 +306,41 @@ $(function() {
       this.render();
     },
 
+    forgotPassword: function(e) {
+      var self = this;
+      var username = this.$("#login-username").val();
+
+      if (!username || username.length == 0) {
+        self.$(".login-form .error").html("Please enter an email.").show();
+        return false;
+      }
+
+      Parse.User.requestPasswordReset(username, {
+        success: function() {
+          self.$(".login-form .error").hide();
+          alert("Sent password reset instructions to " + username);
+        },
+        error: function(error) {
+          self.$(".login-form .error").html("Error: " + error.message).show();
+        }
+      });
+    },
+
     logIn: function(e) {
       var self = this;
       var username = this.$("#login-username").val();
       var password = this.$("#login-password").val();
+
+      if (!username || username.length == 0) {
+        self.$(".login-form .error").html("Please enter an email.").show();
+        return false;
+      }
+      if (password.length == 0) {
+        self.$(".login-form .error").html("Please enter a password.").show();
+        return false;
+      }
       
+      this.$(".login-form button").attr("disabled", "disabled");
       Parse.User.logIn(username, password, {
         success: function(user) {
           new ManageTodosView();
@@ -318,12 +349,10 @@ $(function() {
         },
 
         error: function(user, error) {
-          self.$(".login-form .error").html("Invalid username or password. Please try again.").show();
+          self.$(".login-form .error").html("Invalid email or password. Please try again.").show();
           this.$(".login-form button").removeAttr("disabled");
         }
       });
-
-      this.$(".login-form button").attr("disabled", "disabled");
 
       return false;
     },
@@ -332,6 +361,15 @@ $(function() {
       var self = this;
       var username = this.$("#signup-username").val();
       var password = this.$("#signup-password").val();
+
+      if (!username || username.length == 0) {
+        self.$(".signup-form .error").html("Please enter an email.").show();
+        return false;
+      }
+      if (password.length == 0) {
+        self.$(".signup-form .error").html("Please enter a password.").show();
+        return false;
+      }
       
       Parse.User.signUp(username, password, { ACL: new Parse.ACL() }, {
         success: function(user) {

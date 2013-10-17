@@ -446,6 +446,13 @@ label[for='toggle-all'] {
     margin-bottom: 15px;
 }
 
+#app .content .login #forgot-password {
+    color: #008;
+    text-decoration: underline;
+    display: inline;
+    cursor: pointer;
+}
+
 #app .content #user-info {
     padding: 5px 10px;
     border-top: 1px solid #ededed;
