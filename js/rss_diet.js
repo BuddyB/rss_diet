@@ -10,27 +10,27 @@ $(function() {
   Parse.initialize("dU6YxEUql5InydFFDwVpsjVhCytHNUqd56WXUqJb",
                    "4mbKMWjobTzWXBjJa2jIo7nm4nU42ZxuP1lRIuBn");
 
-  // Todo Model
+  // Feed Model
   // ----------
 
-  // Our basic Todo model has `content`, `order`, and `done` attributes.
-  var Todo = Parse.Object.extend("Todo", {
-    // Default attributes for the todo.
+  // Our basic Feed model.
+  var Feed = Parse.Object.extend("Feed", {
+    // Default attributes for the Feed.
     defaults: {
-      content: "empty todo...",
-      done: false
+      name: "Slim feed",
+      url: "http://example.com/rss/stuff_i_like.xml"
     },
 
     // Ensure that each todo created has `content`.
     initialize: function() {
-      if (!this.get("content")) {
-        this.set({"content": this.defaults.content});
-      }
+      //if (!this.get("content")) {
+      //  this.set({"content": this.defaults.content});
+      //}
     },
 
     // Toggle the `done` state of this todo item.
     toggle: function() {
-      this.save({done: !this.get("done")});
+      //this.save({done: !this.get("done")});
     }
   });
 
@@ -41,43 +41,44 @@ $(function() {
     }
   });
 
-  // Todo Collection
+  // Feed Collection
   // ---------------
 
-  var TodoList = Parse.Collection.extend({
+  var FeedList = Parse.Collection.extend({
 
     // Reference to this collection's model.
-    model: Todo,
+    model: Feed,
 
     // Filter down the list of all todo items that are finished.
     done: function() {
-      return this.filter(function(todo){ return todo.get('done'); });
+//      return this.filter(function(todo){ return todo.get('done'); });
+      return true;
     },
 
     // Filter down the list to only todo items that are still not finished.
-    remaining: function() {
-      return this.without.apply(this, this.done());
-    },
+//    remaining: function() {
+//      return this.without.apply(this, this.done());
+////    },
 
     // We keep the Todos in sequential order, despite being saved by unordered
     // GUID in the database. This generates the next order number for new items.
-    nextOrder: function() {
-      if (!this.length) return 1;
-      return this.last().get('order') + 1;
-    },
+//    nextOrder: function() {
+//      if (!this.length) return 1;
+//      return this.last().get('order') + 1;
+//    },
 
     // Todos are sorted by their original insertion order.
-    comparator: function(todo) {
-      return todo.get('order');
-    }
+//    comparator: function(todo) {
+//      return todo.get('order');
+//    }
 
   });
 
-  // Todo Item View
+  // Feed Item View
   // --------------
 
-  // The DOM element for a todo item...
-  var TodoView = Parse.View.extend({
+  // The DOM element for a feed item...
+  var FeedView = Parse.View.extend({
 
     //... is a list tag.
     tagName:  "li",
@@ -88,7 +89,8 @@ $(function() {
     // The DOM events specific to an item.
     events: {
       "click .toggle"              : "toggleDone",
-      "dblclick label.todo-content" : "edit",
+      "dblclick label.feed-name" : "edit_name",
+      "dblclick label.feed-url" : "edit_url",
       "click .todo-destroy"   : "clear",
       "keypress .edit"      : "updateOnEnter",
       "blur .edit"          : "close"
@@ -106,7 +108,6 @@ $(function() {
     // Re-render the contents of the todo item.
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
-      this.input = this.$('.edit');
       return this;
     },
 
@@ -116,14 +117,32 @@ $(function() {
     },
 
     // Switch this view into `"editing"` mode, displaying the input field.
+    edit_name: function() {
+      console.log("Editing Name");
+      this.input = this.$('#edit-name');
+      this.edit();
+    },
+    edit_url: function() {
+      console.log("Editing URL");
+      this.input = this.$('#edit-url');
+      this.edit();
+    },
     edit: function() {
+      console.log("editing el " + $(this.el).id);
+      console.log(this.input);
+      console.log(this.input[0]);
       $(this.el).addClass("editing");
       this.input.focus();
     },
 
-    // Close the `"editing"` mode, saving changes to the todo.
+    // Close the `"editing"` mode, saving changes to the feed.
     close: function() {
-      this.model.save({content: this.input.val()});
+      console.log("close called");
+      if (this.input[0].id === "edit-name") {
+        this.model.save({name: this.input.val()});
+      } else if (this.input[0].id === "edit-url") {
+        this.model.save({url: this.input.val()});
+      }
       $(this.el).removeClass("editing");
     },
 
@@ -174,17 +193,17 @@ $(function() {
       this.allCheckbox = this.$("#toggle-all")[0];
 
       // Create our collection of Todos
-      this.todos = new TodoList;
+      this.todos = new FeedList;
 
       // Setup the query for the collection to look for todos from the current user
-      this.todos.query = new Parse.Query(Todo);
+      this.todos.query = new Parse.Query(Feed);
       this.todos.query.equalTo("user", Parse.User.current());
         
       this.todos.bind('add',     this.addOne);
       this.todos.bind('reset',   this.addAll);
       this.todos.bind('all',     this.render);
 
-      // Fetch all the todo items for this user
+      // Fetch all the feed items for this user
       this.todos.fetch();
 
       state.on("change", this.filter, this);
@@ -201,8 +220,8 @@ $(function() {
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      var done = this.todos.done().length;
-      var remaining = this.todos.remaining().length;
+      var done = 0; //this.todos.done().length;
+      var remaining = 0; //this.todos.remaining().length;
 
       this.$('#todo-stats').html(this.statsTemplate({
         total:      this.todos.length,
@@ -246,7 +265,7 @@ $(function() {
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     addOne: function(todo) {
-      var view = new TodoView({model: todo});
+      var view = new FeedView({model: todo});
       this.$("#todo-list").append(view.render().el);
     },
 
@@ -269,11 +288,10 @@ $(function() {
       if (e.keyCode != 13) return;
 
       this.todos.create({
-        content: this.input.val(),
-        order:   this.todos.nextOrder(),
-        done:    false,
-        user:    Parse.User.current(),
-        ACL:     new Parse.ACL(Parse.User.current())
+        name: this.input.val(),
+        url:  "test",
+        user: Parse.User.current(),
+        ACL:  new Parse.ACL(Parse.User.current())
       });
 
       this.input.val('');
@@ -282,7 +300,7 @@ $(function() {
 
     // Clear all done todo items, destroying their models.
     clearCompleted: function() {
-      _.each(this.todos.done(), function(todo){ todo.destroy(); });
+      //_.each(this.todos.done(), function(todo){ todo.destroy(); });
       return false;
     },
 

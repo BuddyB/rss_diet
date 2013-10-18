@@ -77,13 +77,14 @@
     </script>
 
     <script type="text/template" id="item-template">
-      <li class="<%= done ? 'completed' : '' %>">
-	<div class="view">
-	  <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %>>
-	  <label class="todo-content"><%= content %></label>
-	  <button class="todo-destroy"></button>
-	</div>
-	<input class="edit" value="<%= content %>">
+      <li>
+      	<div class="view">
+      	  <label id="name-label" class="feed-name"><%= name %></label>
+      	  <label id="url-label" class="feed-url"><%= url %></label>
+      	  <button class="todo-destroy"></button>
+      	</div>
+      	<input id="edit-name" class="edit" value="<%= name %>">
+      	<input id="edit-url" class="edit" value="<%= url %>">
       </li>
     </script>
 
@@ -101,7 +102,7 @@
 	    <a href="javascript:void(0)" id="completed">Completed</a>
 	  </li>
 	</ul>
-	<button id="clear-completed">Clear completed (<%= done %>)</button>
+	<button id="clear-completed">Clear completed</button>
       </footer>
     </script>
 
