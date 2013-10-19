@@ -31,6 +31,10 @@ $(function() {
     // Toggle the `done` state of this todo item.
     toggle: function() {
       //this.save({done: !this.get("done")});
+    },
+    
+    url: function() {
+      return this.get("url");
     }
   });
 
@@ -88,11 +92,11 @@ $(function() {
 
     // The DOM events specific to an item.
     events: {
-      "click .toggle"       : "toggleDone",
       "dblclick .view"      : "showDetails",
 //      "dblclick label.feed-url" : "edit_url",
       "click #feed-destroy" : "clear",
       "click #feed-edit"    : "edit",
+      "click #feed-copy"    : "copyLink",
       "keypress .edit"      : "updateOnEnter",
       "blur .edit"          : "save"
     },
@@ -101,20 +105,15 @@ $(function() {
     // a one-to-one correspondence between a Todo and a TodoView in this
     // app, we set a direct reference on the model for convenience.
     initialize: function() {
-      _.bindAll(this, 'render', 'save', 'remove');
+      _.bindAll(this, 'render', 'remove');
       this.model.bind('change', this.render);
       this.model.bind('destroy', this.remove);
     },
 
-    // Re-render the contents of the todo item.
+    // Re-render the contents of the feed item.
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       return this;
-    },
-
-    // Toggle the `"done"` state of the model.
-    toggleDone: function() {
-      this.model.toggle();
     },
 
     collapseAll: function() {
@@ -126,6 +125,13 @@ $(function() {
     showDetails: function() {
       this.collapseAll();
       $(this.el).addClass("inspecting");
+    },
+
+    // Copy the link for this filtered feed
+    copyLink: function() {
+      console.log("COPY");
+      this.collapseAll();
+      alert("Please copy this link for your filtered RSS feed:\n\n" + this.model.url());
     },
 
     // Switch this view into `"editing"` mode, displaying the input field.
@@ -225,8 +231,8 @@ $(function() {
 
       this.$('#todo-stats').html(this.statsTemplate({
         total:      this.todos.length,
-        done:       done,
-        remaining:  remaining
+        done:       this.todos.length,
+        remaining:  this.todos.length
       }));
 
       this.delegateEvents();

@@ -59,9 +59,9 @@
 
       <div class="section">
 
-        <header id="header">
-          <input id="new-todo" placeholder="What needs to be done?" type="text" />
-        </header>
+        <footer id="header">
+          <input id="new-todo" placeholder="New feed name..." type="text" />
+        </footer>
 
         <div id="main">
           <input id="toggle-all" type="checkbox">
@@ -80,7 +80,7 @@
       <li>
       	<div class="view">
       	  <label id="name-label" class="feed-name"><%= name %></label>
-      	  <button id="feed-details" class="hover-button">Copy</button>
+      	  <button id="feed-copy" class="hover-button">Copy</button>
       	</div>
         <div class="details">
       	  <label id="name-label" class="feed-name"><%= name %></label>
@@ -97,7 +97,7 @@
 
     <script type="text/template" id="stats-template">
       <footer id="footer">
-	<span id="todo-count"><strong><%= remaining %></strong> <%= remaining == 1 ? 'item' : 'items' %> left</span>
+	<span id="todo-count"><strong><%= remaining %></strong> active <%= remaining == 1 ? 'feed' : 'feeds' %></span>
 	<ul id="filters">
 	  <li>
 	    <a href="javascript:void(0)" id="all" class="selected">All</a>
