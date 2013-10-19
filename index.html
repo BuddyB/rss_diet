@@ -80,11 +80,18 @@
       <li>
       	<div class="view">
       	  <label id="name-label" class="feed-name"><%= name %></label>
-      	  <label id="url-label" class="feed-url"><%= url %></label>
-      	  <button class="todo-destroy"></button>
+      	  <button id="feed-details" class="hover-button">Copy</button>
       	</div>
-      	<input id="edit-name" class="edit" value="<%= name %>">
-      	<input id="edit-url" class="edit" value="<%= url %>">
+        <div class="details">
+      	  <label id="name-label" class="feed-name"><%= name %></label>
+      	  <label id="url-label" class="feed-url"><%= url %></label>
+      	  <button id="feed-edit" class="hover-button">Edit</button>
+        </div>
+        <div class="edits">
+      	  <label>Name:</label> <input id="edit-name" class="edit" value="<%= name %>">
+        	<label>RSS URL:</label> <input id="edit-url" class="edit" value="<%= url %>">
+      	  <button id="feed-destroy" class="hover-button" title="Delete">✖</button>
+        </div>
       </li>
     </script>
 

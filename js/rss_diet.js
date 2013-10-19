@@ -88,19 +88,20 @@ $(function() {
 
     // The DOM events specific to an item.
     events: {
-      "click .toggle"              : "toggleDone",
-      "dblclick label.feed-name" : "edit_name",
-      "dblclick label.feed-url" : "edit_url",
-      "click .todo-destroy"   : "clear",
+      "click .toggle"       : "toggleDone",
+      "dblclick .view"      : "showDetails",
+//      "dblclick label.feed-url" : "edit_url",
+      "click #feed-destroy" : "clear",
+      "click #feed-edit"    : "edit",
       "keypress .edit"      : "updateOnEnter",
-      "blur .edit"          : "close"
+      "blur .edit"          : "save"
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
     // a one-to-one correspondence between a Todo and a TodoView in this
     // app, we set a direct reference on the model for convenience.
     initialize: function() {
-      _.bindAll(this, 'render', 'close', 'remove');
+      _.bindAll(this, 'render', 'save', 'remove');
       this.model.bind('change', this.render);
       this.model.bind('destroy', this.remove);
     },
@@ -116,39 +117,38 @@ $(function() {
       this.model.toggle();
     },
 
+    collapseAll: function() {
+      $(".inspecting").removeClass("inspecting");
+      $(".editing").removeClass("editing");
+    },
+
+    // Show details
+    showDetails: function() {
+      this.collapseAll();
+      $(this.el).addClass("inspecting");
+    },
+
     // Switch this view into `"editing"` mode, displaying the input field.
-    edit_name: function() {
-      console.log("Editing Name");
-      this.input = this.$('#edit-name');
-      this.edit();
-    },
-    edit_url: function() {
-      console.log("Editing URL");
-      this.input = this.$('#edit-url');
-      this.edit();
-    },
     edit: function() {
-      console.log("editing el " + $(this.el).id);
-      console.log(this.input);
-      console.log(this.input[0]);
+      this.collapseAll();
       $(this.el).addClass("editing");
-      this.input.focus();
     },
 
     // Close the `"editing"` mode, saving changes to the feed.
-    close: function() {
-      console.log("close called");
-      if (this.input[0].id === "edit-name") {
-        this.model.save({name: this.input.val()});
-      } else if (this.input[0].id === "edit-url") {
-        this.model.save({url: this.input.val()});
-      }
-      $(this.el).removeClass("editing");
+    save: function() {
+      console.log("save called");
+
+      var name = this.$("#edit-name");
+      var url = this.$("#edit-url");
+      this.model.save({
+        name: name.val(),
+        url: url.val()
+      });
     },
 
     // If you hit `enter`, we're through editing the item.
     updateOnEnter: function(e) {
-      if (e.keyCode == 13) this.close();
+      if (e.keyCode == 13) this.save();
     },
 
     // Remove the item, destroy the model.
