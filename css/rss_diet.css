@@ -219,8 +219,13 @@ label[for='toggle-all'] {
     padding: 0;
 }
 
+#todo-list li.editing .editlabel {
+    display: inline-block;
+    width: 20%;
+}
+
 #todo-list li.editing .edit {
-    width: 306px;
+    width: auto;
     padding: 13px 17px 12px 17px;
     margin: 0 0 0 43px;
 }
@@ -322,10 +327,6 @@ label[for='toggle-all'] {
 
 #todo-list li .edits {
     display: none;
-}
-
-#todo-list li .edits label {
-    display: inline;
 }
 
 #todo-list li.editing:last-child {

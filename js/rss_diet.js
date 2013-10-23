@@ -18,23 +18,20 @@ $(function() {
     // Default attributes for the Feed.
     defaults: {
       name: "Slim feed",
-      url: "http://example.com/rss/stuff_i_like.xml"
+      url: "http://example.com/rss/stuff_i_like.xml",
+      title_filter: ""
     },
 
     // Ensure that each todo created has `content`.
     initialize: function() {
-      //if (!this.get("content")) {
-      //  this.set({"content": this.defaults.content});
+      //if (!this.get("title_filter")) {
+      //  this.set({"title_filter": this.defaults.title_filter});
       //}
     },
 
     // Toggle the `done` state of this todo item.
     toggle: function() {
       //this.save({done: !this.get("done")});
-    },
-    
-    url: function() {
-      return this.get("url");
     }
   });
 
@@ -146,9 +143,11 @@ $(function() {
 
       var name = this.$("#edit-name");
       var url = this.$("#edit-url");
+      var title_filter = this.$("#edit-title_filter");
       this.model.save({
         name: name.val(),
-        url: url.val()
+        url: url.val(),
+        title_filter: title_filter.val()
       });
     },
 

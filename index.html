@@ -88,8 +88,9 @@
       	  <button id="feed-edit" class="hover-button">Edit</button>
         </div>
         <div class="edits">
-      	  <label>Name:</label> <input id="edit-name" class="edit" value="<%= name %>">
-        	<label>RSS URL:</label> <input id="edit-url" class="edit" value="<%= url %>">
+      	  <label class="editlabel">Name:</label> <input id="edit-name" class="edit" value="<%= name %>"><br>
+        	<label class="editlabel">RSS URL:</label> <input id="edit-url" class="edit" value="<%= url %>">
+        	<label class="editlabel">Title filter:</label> <input id="edit-title_filter" class="edit" value="<%= title_filter %>">
       	  <button id="feed-destroy" class="hover-button" title="Delete">✖</button>
         </div>
       </li>
